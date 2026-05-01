@@ -4,6 +4,7 @@ An end-to-end **Credit Risk Analytics** that analyzes borrower data and predicts
 
 **Region:** Plains (MN · IA · MO · KS · NE · SD · ND)  
 **Dataset:** Lending Club (2007–2018) + Macroeconomic Data (FRED, BLS, BEA) 
+
 ---
 
 ## Overview
@@ -34,6 +35,7 @@ The goal is to help financial institutions make better lending decisions by pred
 - Gradient Boosting  
 
 Gradient Boosting selected for best performance
+
 ---
 
 ## Evaluation Metrics
