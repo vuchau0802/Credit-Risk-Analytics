@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Credit Risk Analytics · Plains Region</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap');
+         :root {
+            --bg: #07090f;
+            --s1: #0e1320;
+            --s2: #131b2e;
+            --border: #1c2a42;
+            --a1: #38bdf8;
+            --a2: #f97316;
+            --a3: #a78bfa;
+            --a4: #34d399;
+            --danger: #f87171;
+            --warn: #fbbf24;
+            --muted: #475569;
+            --text: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        
+        html {
+            scroll-behavior: smooth
+        }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background-image: radial-gradient(ellipse 80% 50% at 10% 0%, rgba(56, 189, 248, .05) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 90% 100%, rgba(167, 139, 250, .04) 0%, transparent 60%);
+        }
+        /* NAV */
+        
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            height: 56px;
+            background: rgba(7, 9, 15, .88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 28px;
+        }
+        
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: .03em;
+        }
+        
+        .nav-logo span {
+            color: var(--a1)
+        }
+        
+        .nav-tag {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            background: var(--s1);
+            border: 1px solid var(--border);
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        
+        .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--a4);
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: blink 2s infinite
+        }
+        
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1
+            }
+            50% {
+                opacity: .3
+            }
+        }
+        /* LAYOUT */
+        
+        main {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 28px
+        }
+        
+        .sec-head {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--a1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 18px;
+        }
+        
+        .sec-head::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--border), transparent)
+        }
+        /* KPI STRIP */
+        
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px
+        }
+        
+        .kpi {
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color .2s, transform .2s;
+        }
+        
+        .kpi:hover {
+            border-color: rgba(56, 189, 248, .4);
+            transform: translateY(-2px)
+        }
+        
+        .kpi::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(56, 189, 248, .03), transparent);
+            pointer-events: none;
+        }
+        
+        .kpi-l {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+        
+        .kpi-v {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 500;
+            line-height: 1
+        }
+        
+        .kpi-v.hi {
+            color: var(--a4)
+        }
+        
+        .kpi-v.lo {
+            color: var(--a1)
+        }
+        
+        .kpi-v.warn {
+            color: var(--warn)
+        }
+        
+        .kpi-v.danger {
+            color: var(--danger)
+        }
+        
+        .kpi-s {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px
+        }
+        
+        .kpi-ico {
+            position: absolute;
+            right: 12px;
+            bottom: 10px;
+            font-size: 1.4rem;
+            opacity: .1
+        }
+        /* GRID */
+        
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px
+        }
+        
+        .g3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px
+        }
+        
+        .g32 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px
+        }
+        
+        .gfull {
+            grid-column: 1/-1
+        }
+        /* CARD */
+        
+        .card {
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            margin-bottom: 3px
+        }
+        
+        .card .sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 16px
+        }
+        
+        .wrap {
+            position: relative;
+            height: 250px
+        }
+        
+        .wrap.tall {
+            height: 300px
+        }
+        /* TABLE */
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px
+        }
+        
+        thead th {
+            text-align: left;
+            padding: 6px 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border)
+        }
+        
+        tbody tr {
+            transition: background .15s
+        }
+        
+        tbody tr:hover {
+            background: var(--s2)
+        }
+        
+        tbody td {
+            padding: 7px 10px;
+            border-bottom: 1px solid rgba(28, 42, 66, .5)
+        }
+        
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px
+        }
+        
+        .pill.h {
+            background: rgba(248, 113, 113, .15);
+            color: var(--danger)
+        }
+        
+        .pill.m {
+            background: rgba(251, 191, 36, .15);
+            color: var(--warn)
+        }
+        
+        .pill.l {
+            background: rgba(52, 211, 153, .15);
+            color: var(--a4)
+        }
+        /* MACRO BARS */
+        
+        .mbar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px
+        }
+        
+        .mbar-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            width: 110px;
+            text-align: right;
+            flex-shrink: 0
+        }
+        
+        .mbar-wrap {
+            flex: 1;
+            height: 8px;
+            background: var(--s2);
+            border-radius: 4px;
+            overflow: hidden
+        }
+        
+        .mbar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1.2s ease
+        }
+        
+        .mbar-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            width: 52px
+        }
+        /* SPINNER */
+        
+        .spin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 250px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px
+        }
+        
+        @media(max-width:960px) {
+            .g2,
+            .g3,
+            .g32 {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-logo">Credit <span>Risk</span> Analytics</div>
+        <div class="nav-tag">Plains Region | MN · IA · MO · KS · NE · SD · ND</div>
+    </nav>
+
+    <main>
+
+        <!-- KPIs -->
+        <div class="sec-head">Overview</div>
+        <div class="kpi-strip" id="kpi-strip">
+            <div class="spin">Loading…</div>
+        </div>
+
+        <!-- Grade + Int Rate -->
+        <div class="sec-head">Grade &amp; Interest Rate Analysis</div>
+        <div class="g2">
+            <div class="card">
+                <h3>Avg Interest Rate by Grade</h3>
+                <p class="sub">Grade A (lowest risk) → Grade E (highest risk)</p>
+                <div class="wrap"><canvas id="gradeIntChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Interest Rate Distribution</h3>
+                <p class="sub">Loan count per rate band</p>
+                <div class="wrap"><canvas id="intRateChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Borrower Risk -->
+        <div class="sec-head">Borrower Risk Factors</div>
+        <div class="g2">
+            <div class="card">
+                <h3>DTI Ratio Segments</h3>
+                <p class="sub">Loan count by debt-to-income band</p>
+                <div class="wrap"><canvas id="dtiChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Revolving Utilization vs. Avg Interest Rate</h3>
+                <p class="sub">Credit utilization impact on pricing</p>
+                <div class="wrap"><canvas id="revolChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Income + Employment -->
+        <div class="sec-head">Income &amp; Employment</div>
+        <div class="g2">
+            <div class="card">
+                <h3>Loan Amount by Income Category</h3>
+                <p class="sub">Average loan size across income bands</p>
+                <div class="wrap"><canvas id="incomeChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Avg Interest Rate by Employment Length</h3>
+                <p class="sub">Years employed (0 = &lt;1 yr, 10 = 10+ yrs)</p>
+                <div class="wrap"><canvas id="empChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Open Accounts + Grade Loan Size -->
+        <div class="sec-head">Credit Profile</div>
+        <div class="g2">
+            <div class="card">
+                <h3>Avg Interest Rate by Open Accounts</h3>
+                <p class="sub">Number of open credit accounts vs pricing</p>
+                <div class="wrap"><canvas id="openAccChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Avg Loan Amount by Grade</h3>
+                <p class="sub">Borrowing size across risk grades</p>
+                <div class="wrap"><canvas id="gradeLoanChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- State Table + Macro -->
+        <div class="sec-head">Geographic &amp; Macroeconomic Analysis</div>
+        <div class="g32">
+            <div class="card">
+                <h3>Plains States Breakdown</h3>
+                <p class="sub">Loan activity, pricing &amp; risk by state</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Loans</th>
+                            <th>Avg Loan</th>
+                            <th>Avg Rate</th>
+                            <th>Avg DTI</th>
+                            <th>Default %</th>
+                            <th>Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody id="state-tbody"></tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Macroeconomic Indicators</h3>
+                <p class="sub">Per-state unemployment, inflation &amp; GDP growth</p>
+                <div id="macro-container"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ── Chart defaults ────────────────────────────────────────────────────────────
+        Chart.defaults.color = '#475569';
+        Chart.defaults.font.family = "'JetBrains Mono', monospace";
+        Chart.defaults.font.size = 11;
+
+        const A1 = '#38bdf8',
+            A2 = '#f97316',
+            A3 = '#a78bfa',
+            A4 = '#34d399',
+            DG = '#f87171',
+            WN = '#fbbf24',
+            MT = '#475569';
+        const gridCfg = {
+            color: 'rgba(28,42,66,.7)',
+            drawBorder: false
+        };
+        const ax = {
+            x: {
+                grid: gridCfg,
+                ticks: {
+                    color: MT
+                }
+            },
+            y: {
+                grid: gridCfg,
+                ticks: {
+                    color: MT
+                }
+            }
+        };
+        const GRADE_COLORS = {
+            'A': A4,
+            'B': '#4ade80',
+            'C': WN,
+            'D': A2,
+            'E': DG
+        };
+        const gradeClr = g => GRADE_COLORS[g] || A1;
+
+        async function get(url) {
+            const r = await fetch(url);
+            return r.json();
+        }
+
+        function fmt(n) {
+            if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+            if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+            return '$' + n.toFixed(0);
+        }
+
+        // ── KPIs ──────────────────────────────────────────────────────────────────────
+        async function kpis() {
+            const d = await get('/api/overview');
+            const cards = [{
+                l: 'Total Loans',
+                v: d.total_loans.toLocaleString(),
+                s: 'in dataset',
+                cls: 'lo',
+                i: '📋'
+            }, {
+                l: 'Portfolio Value',
+                v: fmt(d.total_amount),
+                s: 'total originations',
+                cls: 'lo',
+                i: '💰'
+            }, {
+                l: 'Default Rate',
+                v: (d.default_rate * 100).toFixed(2) + '%',
+                s: 'charged-off',
+                cls: 'danger',
+                i: '⚠️'
+            }, {
+                l: 'Avg Loan',
+                v: fmt(d.avg_loan),
+                s: 'per borrower',
+                cls: '',
+                i: '📊'
+            }, {
+                l: 'Avg Interest',
+                v: d.avg_int_rate.toFixed(2) + '%',
+                s: 'weighted portfolio',
+                cls: 'warn',
+                i: '📈'
+            }, {
+                l: 'Avg DTI',
+                v: d.avg_dti.toFixed(1) + '%',
+                s: 'debt-to-income',
+                cls: '',
+                i: '⚖️'
+            }, {
+                l: 'Revolv. Util',
+                v: d.avg_revol_util.toFixed(1) + '%',
+                s: 'avg credit usage',
+                cls: '',
+                i: '💳'
+            }, {
+                l: 'Avg Income',
+                v: fmt(d.avg_income),
+                s: 'stated annual',
+                cls: 'hi',
+                i: '💵'
+            }, {
+                l: 'Avg Installment',
+                v: fmt(d.avg_installment),
+                s: 'monthly payment',
+                cls: '',
+                i: '📅'
+            }, {
+                l: 'States',
+                v: d.states,
+                s: 'Plains region',
+                cls: 'lo',
+                i: '🗺️'
+            }, ];
+            document.getElementById('kpi-strip').innerHTML = cards.map(c => `
+    <div class="kpi">
+      <div class="kpi-l">${c.l}</div>
+      <div class="kpi-v ${c.cls}">${c.v}</div>
+      <div class="kpi-s">${c.s}</div>
+      <div class="kpi-ico">${c.i}</div>
+    </div>`).join('');
+        }
+
+        // ── Grade int rate ────────────────────────────────────────────────────────────
+        async function gradeCharts() {
+            const rows = await get('/api/grade_stats');
+            const labels = rows.map(r => r.grade);
+            const colors = labels.map(gradeClr);
+
+            new Chart(document.getElementById('gradeIntChart'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Avg Interest Rate %',
+                        data: rows.map(r => r.avg_int.toFixed(2)),
+                        backgroundColor: colors,
+                        borderRadius: 5
+                    }, {
+                        type: 'line',
+                        label: 'Loan Count',
+                        data: rows.map(r => r.count),
+                        borderColor: A1,
+                        backgroundColor: 'transparent',
+                        tension: .4,
+                        pointRadius: 5,
+                        yAxisID: 'y2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: MT,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    scales: {...ax,
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Int Rate %',
+                                color: MT
+                            }
+                        },
+                        y2: {...ax.y,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Count',
+                                color: A1
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('gradeLoanChart'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Avg Loan Amount ($)',
+                        data: rows.map(r => r.avg_loan),
+                        backgroundColor: colors,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {...ax,
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Avg Loan $',
+                                color: MT
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Interest rate distribution ────────────────────────────────────────────────
+        async function intRateChart() {
+            const d = await get('/api/int_rate_distribution');
+            new Chart(document.getElementById('intRateChart'), {
+                type: 'bar',
+                data: {
+                    labels: d.labels,
+                    datasets: [{
+                        label: 'Loan Count',
+                        data: d.counts,
+                        backgroundColor: A3 + '66',
+                        borderColor: A3,
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        type: 'line',
+                        label: 'Default Rate %',
+                        data: d.default_rates,
+                        borderColor: DG,
+                        backgroundColor: 'transparent',
+                        tension: .4,
+                        pointRadius: 3,
+                        yAxisID: 'y2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: MT,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {...ax.x,
+                            ticks: {
+                                color: MT,
+                                maxRotation: 45
+                            }
+                        },
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Count',
+                                color: MT
+                            }
+                        },
+                        y2: {...ax.y,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Default %',
+                                color: DG
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── DTI ───────────────────────────────────────────────────────────────────────
+        async function dtiChart() {
+            const rows = await get('/api/dti_distribution');
+            new Chart(document.getElementById('dtiChart'), {
+                type: 'bar',
+                data: {
+                    labels: rows.map(r => r.dti_bin || r.bin),
+                    datasets: [{
+                        label: 'Loan Count',
+                        data: rows.map(r => r.count),
+                        backgroundColor: rows.map(r => r.count > 20 ? A1 + 'bb' : A3 + 'bb'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {...ax,
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Loans',
+                                color: MT
+                            }
+                        },
+                        x: {...ax.x,
+                            title: {
+                                display: true,
+                                text: 'DTI Band',
+                                color: MT
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Revolving utilization ─────────────────────────────────────────────────────
+        async function revolChart() {
+            const rows = await get('/api/revol_util_distribution');
+            new Chart(document.getElementById('revolChart'), {
+                type: 'line',
+                data: {
+                    labels: rows.map(r => r.revol_util_bin || r.bin),
+                    datasets: [{
+                        label: 'Avg Interest Rate %',
+                        data: rows.map(r => r.avg_int),
+                        borderColor: A2,
+                        backgroundColor: A2 + '22',
+                        fill: true,
+                        tension: .4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {...ax.x,
+                            ticks: {
+                                color: MT,
+                                maxRotation: 45
+                            }
+                        },
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Avg Int Rate %',
+                                color: A2
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Income category ───────────────────────────────────────────────────────────
+        async function incomeChart() {
+            const rows = await get('/api/income_cat_stats');
+            const palette = [A4, A1, A3, A2];
+            new Chart(document.getElementById('incomeChart'), {
+                type: 'bar',
+                data: {
+                    labels: rows.map(r => r.income_label),
+                    datasets: [{
+                        label: 'Avg Loan $',
+                        data: rows.map(r => r.avg_loan),
+                        backgroundColor: palette,
+                        borderRadius: 5,
+                        yAxisID: 'y'
+                    }, {
+                        type: 'line',
+                        label: 'Avg DTI %',
+                        data: rows.map(r => r.avg_dti),
+                        borderColor: WN,
+                        backgroundColor: 'transparent',
+                        tension: .4,
+                        pointRadius: 5,
+                        yAxisID: 'y2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: MT,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {...ax.x,
+                            ticks: {
+                                color: MT,
+                                maxRotation: 20
+                            }
+                        },
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Avg Loan $',
+                                color: MT
+                            }
+                        },
+                        y2: {...ax.y,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'DTI %',
+                                color: WN
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Employment length ─────────────────────────────────────────────────────────
+        async function empChart() {
+            const rows = await get('/api/emp_length_stats');
+            new Chart(document.getElementById('empChart'), {
+                type: 'line',
+                data: {
+                    labels: rows.map(r => r.emp_length_num + 'yr'),
+                    datasets: [{
+                        label: 'Avg Interest Rate %',
+                        data: rows.map(r => r.avg_int),
+                        borderColor: A1,
+                        backgroundColor: A1 + '22',
+                        fill: true,
+                        tension: .4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {...ax,
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Avg Int Rate %',
+                                color: A1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Open accounts ─────────────────────────────────────────────────────────────
+        async function openAccChart() {
+            const rows = await get('/api/open_acc_stats');
+            new Chart(document.getElementById('openAccChart'), {
+                type: 'bar',
+                data: {
+                    labels: rows.map(r => r.open_acc_bin || r.bin),
+                    datasets: [{
+                        label: 'Avg Interest Rate %',
+                        data: rows.map(r => r.avg_int),
+                        backgroundColor: A3 + '99',
+                        borderColor: A3,
+                        borderRadius: 5,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {...ax,
+                        y: {...ax.y,
+                            title: {
+                                display: true,
+                                text: 'Avg Int Rate %',
+                                color: MT
+                            }
+                        },
+                        x: {...ax.x,
+                            title: {
+                                display: true,
+                                text: 'Open Accounts',
+                                color: MT
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── State table ───────────────────────────────────────────────────────────────
+        async function stateTable() {
+            const rows = await get('/api/state_stats');
+            document.getElementById('state-tbody').innerHTML = rows.map(r => {
+                const dr = r.default_rate;
+                const risk = dr > 14 ? 'h' : dr > 10 ? 'm' : 'l';
+                const rl = dr > 14 ? 'High' : dr > 10 ? 'Med' : 'Low';
+                return `<tr>
+      <td><b>${r.state_name}</b> <span style="color:var(--muted);font-size:10px">(${r.addr_state})</span></td>
+      <td style="font-family:'JetBrains Mono',monospace">${r.count.toLocaleString()}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${fmt(r.avg_loan)}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${r.avg_int}%</td>
+      <td style="font-family:'JetBrains Mono',monospace">${r.avg_dti}%</td>
+      <td style="font-family:'JetBrains Mono',monospace">${r.default_rate}%</td>
+      <td><span class="pill ${risk}">${rl}</span></td>
+    </tr>`;
+            }).join('');
+        }
+
+        // ── Macro bars ────────────────────────────────────────────────────────────────
+        async function macroBars() {
+            const rows = await get('/api/macro_stats');
+            const maxU = Math.max(...rows.map(r => r.unemployment_rate));
+            const maxG = Math.max(...rows.map(r => Math.abs(r.gdp_growth)));
+
+            const html = rows.map(r => `
+    <div style="margin-bottom:14px">
+      <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text)">
+        ${r.state_name} <span style="color:var(--muted);font-size:10px">(${r.addr_state})</span>
+      </div>
+      <div class="mbar-row">
+        <div class="mbar-lbl">Unemployment</div>
+        <div class="mbar-wrap"><div class="mbar" style="width:${(r.unemployment_rate/maxU*100).toFixed(0)}%;background:${DG}"></div></div>
+        <div class="mbar-val" style="color:${DG}">${r.unemployment_rate.toFixed(2)}%</div>
+      </div>
+      <div class="mbar-row">
+        <div class="mbar-lbl">Inflation</div>
+        <div class="mbar-wrap"><div class="mbar" style="width:60%;background:${WN}"></div></div>
+        <div class="mbar-val" style="color:${WN}">${r.inflation.toFixed(4)}</div>
+      </div>
+      <div class="mbar-row">
+        <div class="mbar-lbl">GDP Growth</div>
+        <div class="mbar-wrap"><div class="mbar" style="width:${(Math.abs(r.gdp_growth)/maxG*100).toFixed(0)}%;background:${A4}"></div></div>
+        <div class="mbar-val" style="color:${A4}">${r.gdp_growth.toFixed(4)}</div>
+      </div>
+    </div>`).join('');
+            document.getElementById('macro-container').innerHTML = html;
+        }
+
+        // ── Boot ──────────────────────────────────────────────────────────────────────
+        Promise.all([
+            kpis(), gradeCharts(), intRateChart(), dtiChart(),
+            revolChart(), incomeChart(), empChart(),
+            openAccChart(), stateTable(), macroBars()
+        ]);
+    </script>
+</body>
+
+</html>
