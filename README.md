@@ -78,9 +78,10 @@ python app.py
 
 ---
 
-## Notes
+## Demo
 
-- The app runs on **port 5500** (not Flask's default 5000).
-- Debug mode is enabled by default — set `debug=False` before deploying to production.
-- The data file name contains spaces and parentheses (`cleaned_loan_data (2).csv`). Ensure the filename matches exactly, or update `DATA_PATH` in `app.py`.
-- Plains region states covered: Minnesota, Iowa, Missouri, Kansas, Nebraska, South Dakota, North Dakota.
+> Plains region states covered: Minnesota, Iowa, Missouri, Kansas, Nebraska, South Dakota, North Dakota.
+![Chat Interface](demo/1.png)
+
+![Chat Interface](demo/2.png)
+
