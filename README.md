@@ -1,4 +1,4 @@
-# Credit Risk Analytics Dashboard
+# Credit Risk Analytics
 
 An interactive web dashboard for exploring credit risk patterns across the **Plains region** (MN, IA, MO, KS, NE, SD, ND) using Lending Club loan data (2007–2018) enriched with macroeconomic indicators (FRED, BLS, BEA).
 
