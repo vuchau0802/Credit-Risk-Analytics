@@ -3,7 +3,7 @@ from flask import Flask, jsonify, render_template
 
 app = Flask(__name__)
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "cleaned_loan_data (2).csv")
+DATA_PATH = os.path.join(os.path.dirname(__file__), "data/cleaned_loan_data (2).csv")
 df = pd.read_csv(DATA_PATH, parse_dates=["issue_d"])
 
 GRADE_MAP      = {1:"A", 2:"B", 3:"C", 4:"D", 5:"E"}
