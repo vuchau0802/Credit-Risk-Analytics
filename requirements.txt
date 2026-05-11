@@ -1,3 +1,4 @@
+flash
 pandas
 numpy
 scikit-learn
