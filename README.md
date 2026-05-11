@@ -1,48 +1,86 @@
-# Credit Risk Analytics
+# Credit Risk Analytics Dashboard
 
-An end-to-end **Credit Risk Analytics** that analyzes borrower data and predicts the likelihood of loan default using machine learning.
-
-**Region:** Plains (MN · IA · MO · KS · NE · SD · ND)  
-**Dataset:** Lending Club (2007–2018) + Macroeconomic Data (FRED, BLS, BEA) 
+An interactive web dashboard for exploring credit risk patterns across the **Plains region** (MN, IA, MO, KS, NE, SD, ND) using Lending Club loan data (2007–2018) enriched with macroeconomic indicators (FRED, BLS, BEA).
 
 ---
 
-## Overview
+## Dataset
 
-This project develops a **comprehensive credit risk analytics pipeline** to:
+> **The raw data file is NOT included in this repository** due to its size (original dataset with 2,260,668 rows and 145 columns).
 
-- Predict **loan amount (regression)**
-- Estimate **default probability (classification)**
+### Required columns after preprocessing
 
-The model integrates:
-- Borrower financial data  
-- Credit history  
-- Loan characteristics  
-- **Macroeconomic indicators** (unemployment, inflation, GDP)
+The app expects a cleaned CSV at `data/cleaned_loan_data (2).csv` with at least these columns:
 
-Dataset: **110,683 loans** from the Plains region  
-Default Rate: **12.42%**
+| Column | Description |
+|---|---|
+| `loan_amnt` | Loan amount ($) |
+| `int_rate` | Interest rate (%) |
+| `dti` | Debt-to-income ratio |
+| `revol_util` | Revolving line utilization (%) |
+| `annual_inc` | Annual income ($) |
+| `installment` | Monthly installment ($) |
+| `emp_length_num` | Employment length (numeric, years) |
+| `grade_num` | Loan grade (1=A, 2=B, 3=C, 4=D, 5=E) |
+| `income_cat` | Income category (0=Low, 1=Mid, 2=High, 3=Very High) |
+| `addr_state` | Borrower state (MN, IA, MO, KS, NE, SD, ND) |
+| `default` | Default flag (0 = no default, 1 = default) |
+| `open_acc` | Number of open credit accounts |
+| `issue_d` | Loan issue date (parsed as datetime) |
+| `unemployment_rate` | State-level unemployment rate (FRED) |
+| `inflation` | Inflation rate (BLS) |
+| `gdp_growth` | GDP growth rate (BEA) |
 
-The goal is to help financial institutions make better lending decisions by predicting **creditworthiness**.
+### Preprocessing steps (from `Credit_Risk_.ipynb`)
+
+Run the Jupyter notebook to reproduce the cleaned dataset from raw Lending Club data:
+
+```bash
+jupyter notebook Credit_Risk_.ipynb
+```
+
+The notebook handles: filtering to Plains states → feature engineering → macroeconomic data merge → encoding → export to `data/cleaned_loan_data (2).csv`.
 
 ---
 
-## Models Used
+## Steps to Run
 
-- Logistic Regression  
-- Random Forest  
-- Linear Probability Model (LPM)
-- Gradient Boosting  
+**1. Clone the repository**
 
-Gradient Boosting selected for best performance
+```bash
+git clone https://github.com/vuchau0802/Credit-Risk-Analytics.git
+cd Credit-Risk-Analytics
+```
+
+**2. Create and activate a virtual environment**
+
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS / Linux
+python -m venv venv
+source venv/bin/activate
+```
+
+**3. Install dependencies**
+
+```bash
+pip install -r requirements.txt
+```
+
+**5. Run the app**
+
+```bash
+python app.py
+```
 
 ---
 
-## Evaluation Metrics
+## Notes
 
-- Accuracy  
-- Precision  
-- Recall  
-- F1-score  
-- Confusion Matrix  
-- ROC Curve
+- The app runs on **port 5500** (not Flask's default 5000).
+- Debug mode is enabled by default — set `debug=False` before deploying to production.
+- The data file name contains spaces and parentheses (`cleaned_loan_data (2).csv`). Ensure the filename matches exactly, or update `DATA_PATH` in `app.py`.
+- Plains region states covered: Minnesota, Iowa, Missouri, Kansas, Nebraska, South Dakota, North Dakota.
