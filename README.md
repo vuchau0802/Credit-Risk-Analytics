@@ -70,7 +70,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**5. Run the app**
+**4. Run the app**
 
 ```bash
 python app.py
