@@ -3,7 +3,5 @@ numpy
 scikit-learn
 matplotlib
 seaborn
-xgboost
-jupyter
 fredapi        # FRED API client
 requests       # BLS / BEA API calls
